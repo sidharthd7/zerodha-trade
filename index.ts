@@ -1,4 +1,4 @@
-import { placeOrder } from "./trade";
+import { getPositions, placeOrder } from "./trade";
 
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -12,7 +12,7 @@ const server = new McpServer({
 });
 
 // Add an addition tool
-server.registerTool("add two numbers",
+server.registerTool("add",
   {
     title: "Addition Tool",
     description: "Add two numbers",
@@ -24,7 +24,7 @@ server.registerTool("add two numbers",
 );
 
 // add a buy tool
-server.registerTool("Buy a stock",
+server.registerTool("buy-stock",
     {
         title: "Buy Tool",
         description: "Buy a stock",
@@ -39,7 +39,7 @@ server.registerTool("Buy a stock",
 )
 
 // add a sell tool
-server.registerTool("Sell a stock",
+server.registerTool("sell-stock",
     {
         title: "Sell Tool",
         description: "Sell a stock",
@@ -49,6 +49,21 @@ server.registerTool("Sell a stock",
         placeOrder(stock, qty, "SELL");
         return {
             content: [{ type: "text", text: "Stock has been sold"}]
+        }
+    }
+)
+
+// show portfolio
+server.registerTool("show-portfolio",
+    {
+        title: "Show Portfolio",
+        description: "shows all holdings",
+        inputSchema: {}
+    },
+    async () => {
+        const holdings = await getPositions();
+        return {
+            content: [{ type: "text", text: String(holdings)}]
         }
     }
 )

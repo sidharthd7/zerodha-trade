@@ -7,12 +7,12 @@ const apiSecret = "q6rt5x2hlziac9c23jexste39ky2budq";
 let access_token = "BRGRbx6bCdC143JKQjU270Y3Z1tH4r6P";
 
 const kc = new KiteConnect({ api_key: apiKey });
-
-// console.log(kc.getLoginURL());
+kc.setAccessToken(access_token); // hard coded access token
+console.log(kc.getLoginURL());
 
 export async function placeOrder(tradingsymbol: string, quantity: number, type: "BUY"|"SELL") {
   try {
-    kc.setAccessToken(access_token); // hard coded access token
+
     // await generateSession();
     // await getProfile();
     
@@ -24,6 +24,22 @@ export async function placeOrder(tradingsymbol: string, quantity: number, type: 
       product: "CNC",
       order_type: "MARKET"
     });
+
+  } catch ( err) {
+    console.error(err);
+  }
+}
+
+export async function getPositions() {
+  try {
+    kc.setAccessToken(access_token);
+    const holdings = await kc.getPositions();
+    let allHoldings = "";
+    holdings.net.map(holding => {
+      allHoldings += `stock: ${holding.tradingsymbol}, qty: ${holding.quantity}, currentPrice: ${holding.last_price}`
+    })
+
+    return allHoldings;
 
   } catch ( err) {
     console.error(err);
